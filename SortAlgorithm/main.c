@@ -8,12 +8,13 @@
 clock_t start_t, end_t;
 double total_t;
 
-// 直接插入排序
-void InsertSort(int data[], int n)
+// 直接插入排序(插入排序)
+void InsertSort(ElemType data[], int n)
 {
 	int i, j;
 	for (i = 2; i < n; i++)
 	{
+		// data[0]是哨兵
 		data[0] = data[i];
 		for (j = i - 1; data[0] < data[j]; j--)
 		{
@@ -23,13 +24,14 @@ void InsertSort(int data[], int n)
 	}
 }
 
-// 折半插入排序
-void BInsertSort(int data[], int n)
+// 折半插入排序(插入排序)
+void BInsertSort(ElemType data[], int n)
 {
 	int i, j;
 	int low, mid, high;
 	for (i = 2; i < n; i++)
 	{
+		// data[0]是哨兵
 		data[0] = data[i];
 
 		low = 1; high = i - 1;
@@ -50,13 +52,14 @@ void BInsertSort(int data[], int n)
 	}
 }
 
-// 希尔排序
-void ShellSort(int data[], int n)
+// 希尔排序(插入排序)
+void ShellSort(ElemType data[], int n)
 {
 	for (int dk = n/2; dk >= 1; dk /= 2)
 		for (int i = dk + 1; i <= n; i++)
 			if (data[i] < data[i - dk])
 			{
+				// data[0]是哨兵
 				data[0] = data[i];
 
 				int j;
@@ -66,8 +69,8 @@ void ShellSort(int data[], int n)
 			}
 }
 
-// 冒泡排序
-void BubbleSort(int data[], int n)
+// 冒泡排序(交换排序)
+void BubbleSort(ElemType data[], int n)
 {
 	for (int i = 0; i < n - 1; i++)
 	{
@@ -76,7 +79,7 @@ void BubbleSort(int data[], int n)
 		{
 			if (data[j - 1] > data[j])
 			{
-				int t = data[j];
+				ElemType t = data[j];
 				data[j] = data[j - 1];
 				data[j - 1] = t;
 				flag = true;
@@ -86,10 +89,10 @@ void BubbleSort(int data[], int n)
 }
 
 // 快速排序分组算法
-int QuickSort_Partition(int data[], int low, int high)
+int QuickSort_Partition(ElemType data[], int low, int high)
 {
 	// 选择枢轴
-	int pivot = data[low];
+	ElemType pivot = data[low];
 	while (low < high)
 	{
 		while (low < high && data[high] >= pivot)
@@ -103,7 +106,7 @@ int QuickSort_Partition(int data[], int low, int high)
 	return low;
 }
 
-// 快速排序
+// 快速排序(交换排序)
 void QuickSort(int data[], int low, int high)
 {
 	if (low < high)
@@ -114,8 +117,168 @@ void QuickSort(int data[], int low, int high)
 	}
 }
 
+// 直接选择排序，时间复杂度：O(n^2),且时间复杂度与初始序列无关(第一个)
+void SelectSort(ElemType data[], int n)
+{
+	for (int i = 0; i < n - 1; i++)
+	{
+		int min = i;
+		for (int j = i + 1; j < n; j++)
+			if (data[j] < data[min])
+				min = j;
+		if (min != i)
+		{
+			ElemType t = data[i];
+			data[i] = data[min];
+			data[min] = t;
+		}
+	}
+}
+
+// 大根堆向下调整
+void MaxHeap_AdjustDown(ElemType data[], int k, int len)
+{
+	// len为数据长度
+	// data[0]是哨兵
+	data[0] = data[k];
+	for (int i = 2 * k; i <= len; i *= 2)
+	{
+		if (i < len && data[i] < data[i + 1])
+			i++;
+		if (data[0] >= data[i])
+			break;
+		else
+		{
+			data[k] = data[i];
+			k = i;
+		}
+	}
+	data[k] = data[0];
+}
+// 大根堆向上调整
+void MaxHeap_AdjustUp(ElemType data[], int len)
+{
+	data[0] = data[len];
+	int k = len;
+	int i = k / 2;
+	while (i > 0 && data[i] < data[0])
+	{
+		data[k] = data[i];
+		k = i;
+		i = k / 2;
+	}
+	data[k] = data[0];
+}
+
+// 小根堆向下调整
+void MinHeap_AdjustDown(ElemType data[], int k, int len)
+{
+	// len为数据长度
+	// data[0]是哨兵
+	data[0] = data[k];
+	for (int i = 2 * k; i <= len; i *= 2)
+	{
+		if (i < len && data[i] > data[i + 1])
+			i++;
+		if (data[0] <= data[i])
+			break;
+		else
+		{
+			data[k] = data[i];
+			k = i;
+		}
+	}
+	data[k] = data[0];
+}
+// 小根堆向上调整
+void MinHeap_AdjustUp(ElemType data[], int len)
+{
+	data[0] = data[len];
+	int k = len;
+	int i = k / 2;
+	while (i > 0 && data[i] > data[0])
+	{
+		data[k] = data[i];
+		k = i;
+		i = k / 2;
+	}
+	data[k] = data[0];
+}
+
+// 大根堆初始化
+void BuildMaxHeap(ElemType data[], int len)
+{
+	for (int i = len / 2; i > 0; i--)
+		MaxHeap_AdjustDown(data, i, len);
+}
+
+// 小根堆初始化
+void BuildMinHeap(ElemType data[], int len)
+{
+	for (int i = len / 2; i > 0; i--)
+		MinHeap_AdjustDown(data, i, len);
+}
+
+// 大根堆排序(选择排序)
+void MaxHeapSort(ElemType data[], int len)
+{
+	BuildMaxHeap(data, len);
+	for (int i = len; i > 0; i--)
+	{
+		data[0] = data[i];
+		data[i] = data[1];
+		data[1] = data[0];
+		MaxHeap_AdjustDown(data, 1, i - 1);
+	}
+}
+
+// 小根堆排序(选择排序)
+void MinHeapSort(ElemType data[], int len)
+{
+	BuildMinHeap(data, len);
+	for (int i = len; i > 0; i--)
+	{
+		data[0] = data[i];
+		data[i] = data[1];
+		data[1] = data[0];
+		MinHeap_AdjustDown(data, 1, i - 1);
+	}
+}
+
+// 归并排序中，合并两个有序线性表
+void Merge(ElemType data[], ElemType assistant[], int low, int mid, int high)
+{
+	int i, j, k;
+	for (k = low; k <= high; k++)
+		assistant[k] = data[k];
+	for (i = low, j = mid + 1, k = i; i <= mid && j <= high; k++)
+	{
+		if (assistant[i] < assistant[j])
+			data[k] = assistant[i++];
+		else
+			data[k] = assistant[j++];
+	}
+	while (i <= mid)
+		data[k++] = assistant[i++];
+	while (j <= high)
+		data[k++] = assistant[j++];
+}
+
+// 二路归并排序
+void MergeSort(ElemType data[], ElemType assistant[], int low, int high)
+{
+	if (low < high)
+	{
+		int mid = (low + high) / 2;
+		MergeSort(data, assistant, low, mid);
+		MergeSort(data, assistant, mid + 1, high);
+		Merge(data, assistant, low, mid, high);
+	}
+}
+
 void main()
 {
+	ElemType* assistant; // 辅助变量
 	int label;
 	printf("1.直接插入排序(插入排序)\n");
 	printf("2.折半插入排序(插入排序)\n");
@@ -129,6 +292,7 @@ void main()
 
 	printf("请输入排序算法的编号：");
 	scanf_s("%d", &label, 2);
+
 	switch (label)
 	{
 	case 1:
@@ -169,7 +333,7 @@ void main()
 		BubbleSort(int_data, DATA_NUM);
 		end_t = clock();
 
-		// for (int i = 1; i < DATA_NUM; i++) printf("%d ", int_data[i]);
+		// for (int i = 0; i < DATA_NUM; i++) printf("%d ", int_data[i]);
 
 		total_t = (double)(end_t - start_t) / CLOCKS_PER_SEC;
 		printf("冒泡排序的总时间：%fs\n", total_t);
@@ -188,18 +352,18 @@ void main()
 		break;
 	case 6:
 		start_t = clock();
-		BInsertSort(int_data, DATA_NUM);
+		SelectSort(int_data, DATA_NUM);
 		end_t = clock();
 
-		// for (int i = 1; i < DATA_NUM; i++) printf("%d ", int_data[i]);
+		// for (int i = 0; i < DATA_NUM; i++) printf("%d ", int_data[i]);
 
 		total_t = (double)(end_t - start_t) / CLOCKS_PER_SEC;
-		printf("简单选择排序的总时间：%fs\n", total_t);
+		printf("直接选择排序的总时间：%fs\n", total_t);
 		printf("时钟周期数为：%d\n", end_t - start_t);
 		break;
 	case 7:
 		start_t = clock();
-		ShellSort(int_data, DATA_NUM);
+		MaxHeapSort(int_data, DATA_NUM - 1);
 		end_t = clock();
 
 		// for (int i = 1; i < DATA_NUM; i++) printf("%d ", int_data[i]);
@@ -209,11 +373,12 @@ void main()
 		printf("时钟周期数为：%d\n", end_t - start_t);
 		break;
 	case 8:
+		assistant = (ElemType*)malloc(DATA_NUM * sizeof(ElemType));
 		start_t = clock();
-		BubbleSort(int_data, DATA_NUM);
+		MergeSort(int_data, assistant, 1, DATA_NUM - 1);
 		end_t = clock();
 
-		// for (int i = 1; i < DATA_NUM; i++) printf("%d ", int_data[i]);
+		for (int i = 1; i < DATA_NUM; i++) printf("%d ", int_data[i]);
 
 		total_t = (double)(end_t - start_t) / CLOCKS_PER_SEC;
 		printf("归并排序的总时间：%fs\n", total_t);
