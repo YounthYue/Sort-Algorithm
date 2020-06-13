@@ -288,7 +288,6 @@ void main()
 	printf("6.折半简单选择排序(选择排序)\n");
 	printf("7.堆排序(选择排序)\n");
 	printf("8.归并排序\n");
-	printf("9.基数排序\n\n");
 
 	printf("请输入排序算法的编号：");
 	scanf_s("%d", &label, 2);
@@ -382,17 +381,6 @@ void main()
 
 		total_t = (double)(end_t - start_t) / CLOCKS_PER_SEC;
 		printf("归并排序的总时间：%fs\n", total_t);
-		printf("时钟周期数为：%d\n", end_t - start_t);
-		break;
-	case 9:
-		start_t = clock();
-		BubbleSort(int_data, DATA_NUM);
-		end_t = clock();
-
-		// for (int i = 1; i < DATA_NUM; i++) printf("%d ", int_data[i]);
-
-		total_t = (double)(end_t - start_t) / CLOCKS_PER_SEC;
-		printf("基数排序的总时间：%fs\n", total_t);
 		printf("时钟周期数为：%d\n", end_t - start_t);
 		break;
 	default:
